@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prescription-service
+  namespace: docrecords
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prescription-service
+  template:
+    metadata:
+      labels:
+        app: prescription-service
+    spec:
+      containers:
+        - name: prescription-service
+          image: docrecords_dockercompose-prescription-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5004
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_USER
+              value: root
+            - name: DB_PASS
+              value: root
+            - name: DB_NAME
+              value: docrecords
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prescription-service
+  namespace: docrecords
+spec:
+  ports:
+    - port: 5004
+      targetPort: 5004
+  selector:
+    app: prescription-service
+

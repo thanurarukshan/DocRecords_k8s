@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: docrecords
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: docrecords_dockercompose-auth-service:latest
+          imagePullPolicy: Never  # Use local image if loaded into k3s
+          ports:
+            - containerPort: 5001
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_USER
+              value: root
+            - name: DB_PASS
+              value: root
+            - name: DB_NAME
+              value: docrecords
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: docrecords
+spec:
+  ports:
+    - port: 5001
+      targetPort: 5001
+  selector:
+    app: auth-service
+

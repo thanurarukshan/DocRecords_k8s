@@ -1,0 +1,40 @@
+/* Center container */
+.splash-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+}
+
+/* Logo styling with animation */
+.splash-logo {
+  width: 500px;       /* Your desired bigger size */
+  height: auto;       /* Maintain original aspect ratio */
+  animation: splashAnim 2s forwards; /* run animation once */
+}
+
+/* Keyframes for smooth scale and opacity + shine effect */
+@keyframes splashAnim {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    filter: brightness(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+    filter: brightness(1.5);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}

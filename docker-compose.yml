@@ -1,0 +1,94 @@
+version: "3.9"
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: docrecords
+      MYSQL_PASSWORD: Doc_Records123
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+      - ./database/docrecords_db_dump.sql:/docker-entrypoint-initdb.d/2_dump.sql
+    ports:
+      - "3306:3306"
+
+  api-gateway:
+    build: ./backend/api-gateway
+    container_name: api-gateway
+    ports:
+      - "4000:4000"
+    depends_on:
+      - auth-service
+      - patient-service
+      - prescription-service
+      - profile-control-service
+    environment:
+      - NODE_ENV=production
+    # Later you'll replace localhost entries here with service names
+
+  auth-service:
+    build: ./backend/auth-service
+    container_name: auth-service
+    ports:
+      - "5001:5001"
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=docrecords
+      - DB_PASSWORD=Doc_Records123
+      - DB_NAME=auth_db
+      - DB_PORT=3306
+    depends_on:
+      - mysql-db
+
+  patient-service:
+    build: ./backend/patient-service
+    container_name: patient-service
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=docrecords
+      - DB_PASSWORD=Doc_Records123
+      - DB_NAME=auth_db
+      - DB_PORT=3306
+    depends_on:
+      - mysql-db
+
+  prescription-service:
+    build: ./backend/prescription-service
+    container_name: prescription-service
+    ports:
+      - "5004:5004"
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=docrecords
+      - DB_PASSWORD=Doc_Records123
+      - DB_NAME=patient_db
+      - DB_PORT=3306
+    depends_on:
+      - mysql-db
+
+  profile-control-service:
+    build: ./backend/profile-control-service
+    container_name: profile-control-service
+    ports:
+      - "5008:5008"
+    environment:
+      - DB_HOST=mysql-db
+      - DB_USER=docrecords
+      - DB_PASSWORD=Doc_Records123
+      - DB_NAME=auth_db
+      - DB_PORT=3306
+    depends_on:
+      - mysql-db
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api-gateway

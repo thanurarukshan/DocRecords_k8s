@@ -1,0 +1,4 @@
+backend/unused-services/
+database/data/
+*.tar
+node_modules/
