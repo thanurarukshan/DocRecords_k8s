@@ -2,3 +2,4 @@ backend/unused-services/
 database/data/
 *.tar
 node_modules/
+LI_Post.md
