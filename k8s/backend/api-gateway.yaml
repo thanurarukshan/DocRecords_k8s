@@ -20,14 +20,18 @@ spec:
           ports:
             - containerPort: 4000
           env:
-            - name: DB_HOST
-              value: mysql
-            - name: DB_USER
-              value: root
-            - name: DB_PASS
-              value: root
-            - name: DB_NAME
-              value: docrecords
+            - name: AUTH_SERVICE_URL
+              value: "http://auth-service:5001"
+            - name: PATIENT_SERVICE_URL
+              value: "http://patient-service:5000"
+            - name: DOCTOR_SERVICE_URL
+              value: "http://doctor-service:5003"
+            - name: APPOINTMENT_SERVICE_URL
+              value: "http://appointment-service:5004"
+            - name: PRESCRIPTION_SERVICE_URL
+              value: "http://prescription-service:5004"
+            - name: PROFILE_SERVICE_URL
+              value: "http://profile-control-service:5008"
 ---
 apiVersion: v1
 kind: Service
@@ -40,4 +44,3 @@ spec:
       targetPort: 4000
   selector:
     app: api-gateway
-

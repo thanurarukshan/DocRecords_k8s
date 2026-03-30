@@ -16,7 +16,7 @@ spec:
       containers:
         - name: auth-service
           image: docrecords_dockercompose-auth-service:latest
-          imagePullPolicy: Never  # Use local image if loaded into k3s
+          imagePullPolicy: Never
           ports:
             - containerPort: 5001
           env:
@@ -24,11 +24,14 @@ spec:
               value: mysql
             - name: DB_USER
               value: root
-            - name: DB_PASS
+            - name: DB_PASSWORD
               value: root
             - name: DB_NAME
-              value: docrecords
-
+              value: auth_db
+            - name: DB_PORT
+              value: "3306"
+            - name: JWT_SECRET
+              value: supersecretkey
 ---
 apiVersion: v1
 kind: Service
@@ -41,4 +44,3 @@ spec:
       targetPort: 5001
   selector:
     app: auth-service
-

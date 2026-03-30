@@ -1,40 +1,67 @@
-/* Center container */
+/* ═══════════════════════════════════════════════════
+   DocRecords — SplashScreen
+   Dark Futuristic with Neon Glow
+   ═══════════════════════════════════════════════════ */
+
 .splash-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: white;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
 }
 
-/* Logo styling with animation */
+.splash-container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: splashPulse 2s ease-in-out infinite;
+}
+
 .splash-logo {
-  width: 500px;       /* Your desired bigger size */
-  height: auto;       /* Maintain original aspect ratio */
-  animation: splashAnim 2s forwards; /* run animation once */
+  width: 200px;
+  height: auto;
+  filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.5));
+  animation: splashAnim 2s forwards;
+  position: relative;
+  z-index: 1;
 }
 
-/* Keyframes for smooth scale and opacity + shine effect */
 @keyframes splashAnim {
   0% {
     opacity: 0;
     transform: scale(0.5);
-    filter: brightness(0.7);
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.2)) brightness(0.5);
   }
   50% {
     opacity: 1;
     transform: scale(1.1);
-    filter: brightness(1.5);
+    filter: drop-shadow(0 0 40px rgba(0, 240, 255, 0.8)) brightness(1.3);
   }
   70% {
-    opacity: 1;
     transform: scale(1);
-    filter: brightness(1.2);
+    filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.6)) brightness(1.1);
   }
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: brightness(1);
+    filter: drop-shadow(0 0 20px rgba(0, 240, 255, 0.4)) brightness(1);
+  }
+}
+
+@keyframes splashPulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
   }
 }

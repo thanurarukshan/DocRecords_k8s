@@ -27,7 +27,12 @@ services:
       - profile-control-service
     environment:
       - NODE_ENV=production
-    # Later you'll replace localhost entries here with service names
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - PATIENT_SERVICE_URL=http://patient-service:5000
+      - DOCTOR_SERVICE_URL=http://doctor-service:5003
+      - APPOINTMENT_SERVICE_URL=http://appointment-service:5004
+      - PRESCRIPTION_SERVICE_URL=http://prescription-service:5004
+      - PROFILE_SERVICE_URL=http://profile-control-service:5008
 
   auth-service:
     build: ./backend/auth-service
