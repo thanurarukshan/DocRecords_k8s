@@ -3,3 +3,6 @@ database/data/
 *.tar
 node_modules/
 LI_Post.md
+
+get_helm.sh
+k8s_deployment_guide.md

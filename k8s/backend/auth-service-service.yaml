@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service             # DNS name: auth-service (within namespace)
+  namespace: docrecords
+spec:
+  selector:
+    app: auth-service            # Targets Pods with this label
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+  type: ClusterIP

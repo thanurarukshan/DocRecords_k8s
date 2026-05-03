@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: mysql-service             # This name becomes the DNS hostname: mysql-service.docrecords.svc.cluster.local
   namespace: docrecords
 spec:
-  ports:
-    - port: 3306
-      targetPort: 3306
   selector:
-    app: mysql
-
+    app: mysql                    # Routes traffic to Pods with label app=mysql
+  ports:
+    - protocol: TCP
+      port: 3306                  # Port the Service listens on (what other services connect to)
+      targetPort: 3306            # Port on the actual Pod/container
+  type: ClusterIP                 # Only accessible inside the cluster — correct for a database

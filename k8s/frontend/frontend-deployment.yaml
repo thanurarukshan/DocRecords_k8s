@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: docrecords
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: docrecords/frontend:latest
+          imagePullPolicy: Never     # Use the locally imported image
+          ports:
+            - containerPort: 5173   # Port the 'serve' package listens on (from Dockerfile)

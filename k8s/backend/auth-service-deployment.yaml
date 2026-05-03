@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: docrecords
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: docrecords/auth-service:latest   # The image we built and imported
+          imagePullPolicy: Never                  # CRITICAL: use local image, don't pull from internet
+          ports:
+            - containerPort: 5001
+          env:
+            # Reading from ConfigMap (non-sensitive config)
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: AUTH_DB_NAME
+            # Reading from Secret (sensitive credentials)
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets
+                  key: JWT_SECRET

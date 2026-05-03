@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: docrecords
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: docrecords/api-gateway:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 4000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: NODE_ENV
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: AUTH_SERVICE_URL
+            - name: PATIENT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: PATIENT_SERVICE_URL
+            - name: PRESCRIPTION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: PRESCRIPTION_SERVICE_URL
+            - name: PROFILE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: docrecords-config
+                  key: PROFILE_SERVICE_URL

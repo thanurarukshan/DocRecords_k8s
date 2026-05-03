@@ -1,33 +1,62 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: mysql-deployment
   namespace: docrecords
 spec:
+  replicas: 1                   # Only 1 MySQL instance (databases don't scale horizontally like this)
   selector:
     matchLabels:
-      app: mysql
-  template:
+      app: mysql                # This Deployment manages Pods with label app=mysql
+  template:                     # Template for the Pod that will be created
     metadata:
       labels:
-        app: mysql
+        app: mysql              # This label is what the selector above looks for
     spec:
       containers:
         - name: mysql
-          image: mysql:8.0
+          image: mysql:8.0      # Official MySQL image from Docker Hub (K3s pulls this from internet)
+          imagePullPolicy: IfNotPresent  # Pull only if not already cached locally
           ports:
             - containerPort: 3306
           env:
+            # Reading from Secret — reference by secret name and key
             - name: MYSQL_ROOT_PASSWORD
-              value: root
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets   # The Secret object name
+                  key: DB_ROOT_PASSWORD      # The key within that Secret
             - name: MYSQL_USER
-              value: docrecords
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets
+                  key: DB_USER
             - name: MYSQL_PASSWORD
-              value: Doc_Records123
+              valueFrom:
+                secretKeyRef:
+                  name: docrecords-secrets
+                  key: DB_PASSWORD
           volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: mysql-storage
+            - mountPath: /var/lib/mysql    # Where MySQL stores data inside the container
+              name: mysql-storage          # Links to the volume below
+            - mountPath: /docker-entrypoint-initdb.d/init.sql    # Step 1: creates DBs + user
+              name: mysql-init-sql
+              subPath: init.sql
+            - mountPath: /docker-entrypoint-initdb.d/2_dump.sql  # Step 2: schema + seed data
+              name: mysql-dump-sql
+              subPath: docrecords_db_dump.sql
+              # MySQL runs files in /docker-entrypoint-initdb.d alphabetically on FIRST start only
+              # init.sql (1st) → creates databases and docrecords user
+              # 2_dump.sql (2nd) → imports tables and seed data
       volumes:
         - name: mysql-storage
           persistentVolumeClaim:
-            claimName: mysql-pvc
+            claimName: mysql-pvc           # Use the PVC we defined
+        - name: mysql-init-sql
+          hostPath:
+            path: /home/thanura/Advanced-SE-Project/DocRecords_DockerCompose/database/init
+            type: Directory
+        - name: mysql-dump-sql
+          hostPath:
+            path: /home/thanura/Advanced-SE-Project/DocRecords_DockerCompose/database
+            type: Directory

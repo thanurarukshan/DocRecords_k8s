@@ -1,6 +1,4 @@
-# k8s/namespace.yaml
-apiVersion: v1
-kind: Namespace
+apiVersion: v1           # The Kubernetes API version for this object type
+kind: Namespace          # What type of object we're creating
 metadata:
-  name: docrecords
-
+  name: docrecords       # The name of our namespace — we'll use this everywhere

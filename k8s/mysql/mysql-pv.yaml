@@ -1,12 +1,14 @@
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: mysql-pvc
-  namespace: docrecords
+  name: mysql-pv
+  labels:
+    type: local                  # A label — we use this to match with the PVC below
 spec:
+  storageClassName: manual       # A custom class name — must match between PV and PVC
+  capacity:
+    storage: 2Gi                 # Reserve 2 gigabytes of disk space
   accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-
+    - ReadWriteOnce              # Can be mounted by ONE node at a time (correct for a DB)
+  hostPath:
+    path: "/mnt/data/docrecords-mysql"  # Actual folder on the host Linux machine where data is stored

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docrecords-config        # Name we'll reference in Deployments
+  namespace: docrecords
+data:
+  # Database connection details (non-secret)
+  DB_HOST: "mysql-service"       # K8s Service name for MySQL — resolves via cluster DNS
+  DB_PORT: "3306"
+
+  # Database names per service — verified against each service's .env file
+  AUTH_DB_NAME: "auth_db"              # auth-service      → DB_NAME=auth_db
+  PATIENT_DB_NAME: "auth_db"           # patient-service   → DB_NAME=auth_db
+  PRESCRIPTION_DB_NAME: "patient_db"   # prescription-service → DB_NAME=patient_db
+  PROFILE_DB_NAME: "auth_db"           # profile-control-service → DB_NAME=auth_db
+
+  # API Gateway upstream service URLs — using K8s internal Service DNS names
+  # Format: http://<service-name>.<namespace>.svc.cluster.local:<port>
+  # Short form works within the same namespace: http://<service-name>:<port>
+  AUTH_SERVICE_URL: "http://auth-service:5001"
+  PATIENT_SERVICE_URL: "http://patient-service:5000"
+  PRESCRIPTION_SERVICE_URL: "http://prescription-service:5004"
+  PROFILE_SERVICE_URL: "http://profile-control-service:5008"
+
+  NODE_ENV: "production"
